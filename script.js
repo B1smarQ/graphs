@@ -732,12 +732,10 @@ class GraphApp {
             // First node selected
             this.firstNodeForEdge = node;
             node.addClass('first-node-selected');
-            alert(`First node selected: ${node.id()}. Click on another node to create an edge.`);
         } else if (this.firstNodeForEdge.id() === node.id()) {
             // Same node clicked - deselect
             this.firstNodeForEdge.removeClass('first-node-selected');
             this.firstNodeForEdge = null;
-            alert('Node deselected. Click on a different node to create an edge.');
         } else {
             // Second node selected - create edge
             const sourceId = this.firstNodeForEdge.id();
@@ -774,7 +772,6 @@ class GraphApp {
             this.toggleDrawEdgeMode();
 
             this.updateCytoscapeLayout();
-            alert(`Edge created between ${sourceId} and ${targetId}`);
         }
     }
 
