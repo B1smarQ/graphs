@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Graph Visualization and Analysis Tool</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/cytoscape@3.26.0/dist/cytoscape.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Graph Visualization and Analysis Tool</h1>
+        </header>
+        
+        <div class="main-content">
+            <div class="controls">
+                <div class="control-group">
+                    <h3>Graph Operations</h3>
+                    <button id="addNodeBtn">Add Node</button>
+                    <button id="addEdgeBtn">Add Edge</button>
+                    <button id="drawEdgeBtn">Draw Edge</button>
+                    <button id="editNodeBtn">Edit Node</button>
+                    <button id="editEdgeBtn">Edit Edge</button>
+                    <button id="deleteElementBtn">Delete Selected</button>
+                </div>
+                
+                <div class="control-group">
+                    <h3>Graph Properties</h3>
+                    <button id="calculatePropertiesBtn">Calculate Properties</button>
+                    <div id="propertiesOutput"></div>
+                </div>
+                
+                <div class="control-group">
+                    <h3>Graph Algorithms</h3>
+                    <button id="findEulerianBtn">Find Eulerian Path/Cycle</button>
+                    <button id="findShortestPathBtn">Find Shortest Path</button>
+                </div>
+
+                <div class="control-group">
+                    <h3>Save/Load</h3>
+                    <button id="saveGraphBtn">Save Graph</button>
+                    <button id="loadGraphBtn">Load Graph</button>
+                    <button id="clearGraphBtn">Clear Graph</button>
+                </div>
+            </div>
+            
+            <div class="graph-container">
+                <div id="cy"></div>
+            </div>
+        </div>
+        
+        <!-- Modal for node creation/editing -->
+        <div id="nodeModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2 id="nodeModalTitle">Node Properties</h2>
+                <form id="nodeForm">
+                    <label for="nodeId">Node ID:</label>
+                    <input type="text" id="nodeId" required>
+                    
+                    <label for="nodeLabel">Label:</label>
+                    <input type="text" id="nodeLabel">
+                    
+                    <button type="submit">Save</button>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Modal for edge creation/editing -->
+        <div id="edgeModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2 id="edgeModalTitle">Edge Properties</h2>
+                <form id="edgeForm">
+                    <label for="sourceNode">Source Node:</label>
+                    <select id="sourceNode" required></select>
+                    
+                    <label for="targetNode">Target Node:</label>
+                    <select id="targetNode" required></select>
+                    
+                    <label for="edgeWeight">Weight (optional):</label>
+                    <input type="number" id="edgeWeight" step="any">
+                    
+                    <label for="edgeDirected">Directed:</label>
+                    <input type="checkbox" id="edgeDirected">
+                    
+                    <button type="submit">Save</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <script src="graph.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
