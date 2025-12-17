@@ -88,6 +88,35 @@ button:active {
     font-size: 0.9rem;
 }
 
+#adjacencyOutput {
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    padding: 1rem;
+    margin-top: 0.75rem;
+    max-height: 300px;
+    overflow: auto;
+}
+
+#adjacencyOutput table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+}
+
+#adjacencyOutput th, #adjacencyOutput td {
+    border: 1px solid #ccc;
+    padding: 6px 8px;
+    text-align: center;
+}
+
+#adjacencyOutput th {
+    background: #eef3f7;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
 .graph-container {
     flex: 1;
     background-color: white;
@@ -189,6 +218,29 @@ form button:hover {
 .first-node-selected {
     background-color: #f39c12 !important;
     border: 3px solid #e67e22;
+}
+
+/* Graph coloring styles */
+.node.colored {
+    border-width: 2px;
+    border-style: solid;
+    border-color: #2c3e50;
+}
+
+#colorGraphBtn {
+    background-color: #9b59b6;
+}
+
+#colorGraphBtn:hover {
+    background-color: #8e44ad;
+}
+
+#clearColoringBtn {
+    background-color: #95a5a6;
+}
+
+#clearColoringBtn:hover {
+    background-color: #7f8c8d;
 }
 
 /* Responsive design */

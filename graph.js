@@ -1,12 +1,11 @@
 class Graph {
     constructor() {
-        this.nodes = new Map(); // id -> node data
-        this.edges = new Map(); // id -> edge data
-        this.adjacencyList = new Map(); // node id -> array of connected node ids
-        this.edgeMap = new Map(); // Map to store edges between nodes
+        this.nodes = new Map(); 
+        this.edges = new Map();
+        this.adjacencyList = new Map();
+        this.edgeMap = new Map(); 
     }
 
-    // Add a node to the graph
     addNode(id, label = '') {
         if (!this.nodes.has(id)) {
             this.nodes.set(id, { id, label });
@@ -16,22 +15,18 @@ class Graph {
         return false;
     }
 
-    // Remove a node from the graph
     removeNode(id) {
         if (!this.nodes.has(id)) return false;
 
-        // Remove all edges connected to this node
         this.adjacencyList.get(id).forEach(neighborId => {
             this.removeEdge(id, neighborId);
         });
 
-        // Remove the node
         this.nodes.delete(id);
         this.adjacencyList.delete(id);
         return true;
     }
 
-    // Add an edge to the graph
     addEdge(sourceId, targetId, weight = null, directed = false) {
         if (!this.nodes.has(sourceId) || !this.nodes.has(targetId)) {
             return false;
@@ -46,7 +41,6 @@ class Graph {
             directed: directed
         });
 
-        // Update adjacency list
         if (!this.adjacencyList.get(sourceId).includes(targetId)) {
             this.adjacencyList.get(sourceId).push(targetId);
         }
@@ -57,7 +51,6 @@ class Graph {
             }
         }
 
-        // Update edge map
         if (!this.edgeMap.has(sourceId)) {
             this.edgeMap.set(sourceId, new Map());
         }
@@ -73,16 +66,13 @@ class Graph {
         return true;
     }
 
-    // Remove an edge from the graph
     removeEdge(sourceId, targetId) {
         const edgeId = `${sourceId}-${targetId}`;
         const reverseEdgeId = `${targetId}-${sourceId}`;
 
-        // Remove from edges map
         this.edges.delete(edgeId);
         this.edges.delete(reverseEdgeId);
 
-        // Update adjacency list
         const sourceNeighbors = this.adjacencyList.get(sourceId);
         const targetNeighbors = this.adjacencyList.get(targetId);
 
@@ -100,7 +90,6 @@ class Graph {
             }
         }
 
-        // Update edge map
         if (this.edgeMap.has(sourceId) && this.edgeMap.get(sourceId).has(targetId)) {
             this.edgeMap.get(sourceId).delete(targetId);
         }
@@ -112,12 +101,10 @@ class Graph {
         return true;
     }
 
-    // Get neighbors of a node
     getNeighbors(nodeId) {
         return this.adjacencyList.get(nodeId) || [];
     }
 
-    // Check if the graph is connected
     isConnected() {
         if (this.nodes.size === 0) return true;
         if (this.nodes.size === 1) return true;
@@ -129,7 +116,6 @@ class Graph {
         return visited.size === this.nodes.size;
     }
 
-    // Depth-first search
     dfs(startNode, visited = new Set()) {
         visited.add(startNode);
         const neighbors = this.getNeighbors(startNode);
@@ -143,12 +129,10 @@ class Graph {
         return visited;
     }
 
-    // Calculate the degree of a node
     getDegree(nodeId) {
         return this.adjacencyList.get(nodeId) ? this.adjacencyList.get(nodeId).length : 0;
     }
 
-    // Check if all nodes have even degree (for Eulerian cycle)
     allNodesHaveEvenDegree() {
         for (const nodeId of this.nodes.keys()) {
             if (this.getDegree(nodeId) % 2 !== 0) {
@@ -158,7 +142,6 @@ class Graph {
         return true;
     }
 
-    // Check if exactly two nodes have odd degree (for Eulerian path)
     hasExactlyTwoOddDegreeNodes() {
         let oddDegreeCount = 0;
         for (const nodeId of this.nodes.keys()) {
@@ -169,29 +152,23 @@ class Graph {
         return oddDegreeCount === 2;
     }
 
-    // Check if the graph has an Eulerian cycle
     hasEulerianCycle() {
         return this.isConnected() && this.allNodesHaveEvenDegree();
     }
 
-    // Check if the graph has an Eulerian path
     hasEulerianPath() {
         return this.isConnected() && (this.allNodesHaveEvenDegree() || this.hasExactlyTwoOddDegreeNodes());
     }
 
-    // Find Eulerian path/cycle using Hierholzer's algorithm
     findEulerianPath() {
         if (!this.hasEulerianPath()) {
             return null;
         }
 
-        // For Eulerian cycle, start at any vertex
-        // For Eulerian path, start at one of the odd-degree vertices
         let startVertex = null;
         if (this.hasEulerianCycle()) {
             startVertex = this.nodes.keys().next().value;
         } else {
-            // Find a vertex with odd degree
             for (const nodeId of this.nodes.keys()) {
                 if (this.getDegree(nodeId) % 2 !== 0) {
                     startVertex = nodeId;
@@ -202,7 +179,6 @@ class Graph {
 
         if (!startVertex) return null;
 
-        // Create a copy of the adjacency list for traversal
         const tempAdjList = new Map();
         for (const [nodeId, neighbors] of this.adjacencyList.entries()) {
             tempAdjList.set(nodeId, [...neighbors]);
@@ -217,7 +193,6 @@ class Graph {
 
             if (neighbors && neighbors.length > 0) {
                 const next = neighbors.pop();
-                // Remove the edge in both directions (for undirected graph)
                 const nextNeighbors = tempAdjList.get(next);
                 if (nextNeighbors) {
                     const index = nextNeighbors.indexOf(current);
@@ -234,7 +209,6 @@ class Graph {
         return path.reverse();
     }
 
-    // Calculate shortest path using Dijkstra's algorithm
     dijkstra(startNode, endNode) {
         if (!this.nodes.has(startNode) || !this.nodes.has(endNode)) {
             return null;
@@ -245,14 +219,12 @@ class Graph {
         const visited = new Set();
         const unvisited = [];
 
-        // Initialize distances
         for (const nodeId of this.nodes.keys()) {
             distances.set(nodeId, nodeId === startNode ? 0 : Infinity);
             unvisited.push(nodeId);
         }
 
         while (unvisited.length > 0) {
-            // Find node with minimum distance
             unvisited.sort((a, b) => distances.get(a) - distances.get(b));
             const current = unvisited.shift();
 
@@ -262,15 +234,13 @@ class Graph {
 
             visited.add(current);
 
-            // Update distances to neighbors
             const neighbors = this.getNeighbors(current);
             for (const neighbor of neighbors) {
                 if (visited.has(neighbor)) continue;
 
-                // Get edge weight
                 const edgeId = `${current}-${neighbor}`;
                 const reverseEdgeId = `${neighbor}-${current}`;
-                let weight = 1; // Default weight
+                let weight = 1; 
 
                 if (this.edges.has(edgeId) && this.edges.get(edgeId).weight !== null) {
                     weight = this.edges.get(edgeId).weight;
@@ -286,7 +256,6 @@ class Graph {
             }
         }
 
-        // Reconstruct path
         const path = [];
         let currentNode = endNode;
 
@@ -302,20 +271,145 @@ class Graph {
             distance: distances.get(endNode)
         };
     }
+    dijkstraAll(startNode) {
+        if (!this.nodes.has(startNode)) {
+            return null;
+        }
 
-    // Calculate eccentricity of a node
+        const distances = new Map();
+        const previous = new Map();
+        const visited = new Set();
+        const unvisited = [];
+
+        for (const nodeId of this.nodes.keys()) {
+            distances.set(nodeId, nodeId === startNode ? 0 : Infinity);
+            unvisited.push(nodeId);
+        }
+
+        while (unvisited.length > 0) {
+            unvisited.sort((a, b) => distances.get(a) - distances.get(b));
+            const current = unvisited.shift();
+            if (distances.get(current) === Infinity) break;
+            visited.add(current);
+
+            const neighbors = this.getNeighbors(current);
+            for (const neighbor of neighbors) {
+                if (visited.has(neighbor)) continue;
+
+                const edgeId = `${current}-${neighbor}`;
+                const reverseEdgeId = `${neighbor}-${current}`;
+                let weight = 1;
+                if (this.edges.has(edgeId) && this.edges.get(edgeId).weight !== null) {
+                    weight = this.edges.get(edgeId).weight;
+                } else if (this.edges.has(reverseEdgeId) && this.edges.get(reverseEdgeId).weight !== null) {
+                    weight = this.edges.get(reverseEdgeId).weight;
+                }
+
+                const alt = distances.get(current) + weight;
+                if (alt < distances.get(neighbor)) {
+                    distances.set(neighbor, alt);
+                    previous.set(neighbor, current);
+                }
+            }
+        }
+
+        return { distances, previous };
+    }
+
+    hasHamiltonianCycle() {
+        const cycle = this.findHamiltonianCycle();
+        return Array.isArray(cycle) && cycle.length > 0;
+    }
+
+    findHamiltonianCycle() {
+        if (this.nodes.size === 0) return null;
+        if (this.nodes.size === 1) {
+            const only = this.getNodeIds()[0];
+            return null;
+        }
+
+        const nodeIds = this.getNodeIds();
+        const start = nodeIds[0];
+        const visited = new Set([start]);
+        const path = [start];
+
+        const dfs = (current) => {
+            if (path.length === nodeIds.length) {
+                const neighbors = this.getNeighbors(current);
+                if (neighbors.includes(start)) {
+                    return [...path, start];
+                }
+                return null;
+            }
+
+            const neighbors = this.getNeighbors(current);
+            for (const next of neighbors) {
+                if (!visited.has(next)) {
+                    visited.add(next);
+                    path.push(next);
+                    const res = dfs(next);
+                    if (res) return res;
+                    path.pop();
+                    visited.delete(next);
+                }
+            }
+            return null;
+        };
+
+        return dfs(start);
+    }
+
+    hasHamiltonianPath() {
+        const path = this.findHamiltonianPath();
+        return Array.isArray(path) && path.length === this.nodes.size;
+    }
+
+    findHamiltonianPath() {
+        const total = this.nodes.size;
+        if (total === 0) return null;
+
+        const nodeIds = this.getNodeIds();
+
+        const tryFromStart = (start) => {
+            const visited = new Set([start]);
+            const path = [start];
+
+            const dfs = (current) => {
+                if (path.length === total) return [...path];
+                const neighbors = this.getNeighbors(current);
+                for (const next of neighbors) {
+                    if (!visited.has(next)) {
+                        visited.add(next);
+                        path.push(next);
+                        const res = dfs(next);
+                        if (res) return res;
+                        path.pop();
+                        visited.delete(next);
+                    }
+                }
+                return null;
+            };
+
+            return dfs(start);
+        };
+    
+        for (const s of nodeIds) {
+            const result = tryFromStart(s);
+            if (result) return result;
+        }
+        return null;
+    }
+
     eccentricity(nodeId) {
         if (!this.nodes.has(nodeId)) return -1;
 
         let maxDistance = 0;
         const distances = new Map();
 
-        // Initialize distances
         for (const id of this.nodes.keys()) {
             distances.set(id, id === nodeId ? 0 : Infinity);
         }
 
-        // BFS to find distances
         const queue = [nodeId];
         const visited = new Set([nodeId]);
 
@@ -340,7 +434,6 @@ class Graph {
         return maxDistance === Infinity ? -1 : maxDistance;
     }
 
-    // Calculate radius of the graph
     radius() {
         if (this.nodes.size === 0) return -1;
 
@@ -355,7 +448,6 @@ class Graph {
         return minEccentricity === Infinity ? -1 : minEccentricity;
     }
 
-    // Calculate diameter of the graph
     diameter() {
         if (this.nodes.size === 0) return -1;
 
@@ -370,7 +462,6 @@ class Graph {
         return maxEccentricity;
     }
 
-    // Get connected components
     getConnectedComponents() {
         const components = [];
         const visited = new Set();
@@ -391,38 +482,30 @@ class Graph {
         return components;
     }
 
-    // Get number of connected components
     getComponentCount() {
         return this.getConnectedComponents().length;
     }
 
-    // Check if the graph is a tree
     isTree() {
-        // A tree is connected and has n-1 edges
         return this.isConnected() && this.edges.size === this.nodes.size - 1;
     }
 
-    // Get all node IDs
     getNodeIds() {
         return Array.from(this.nodes.keys());
     }
 
-    // Get all edge IDs
     getEdgeIds() {
         return Array.from(this.edges.keys());
     }
 
-    // Get node data
     getNode(id) {
         return this.nodes.get(id);
     }
 
-    // Get edge data
     getEdge(id) {
         return this.edges.get(id);
     }
 
-    // Update node data
     updateNode(id, label) {
         if (this.nodes.has(id)) {
             this.nodes.get(id).label = label;
@@ -431,7 +514,6 @@ class Graph {
         return false;
     }
 
-    // Update edge data
     updateEdge(sourceId, targetId, weight, directed) {
         const edgeId = `${sourceId}-${targetId}`;
         if (this.edges.has(edgeId)) {
@@ -440,5 +522,51 @@ class Graph {
             return true;
         }
         return false;
+    }
+
+    colorGraph() {
+        if (this.nodes.size === 0) {
+            return new Map();
+        }
+
+        const coloring = new Map();
+        const nodeIds = this.getNodeIds();
+
+        const nodesByDegree = [...nodeIds].sort((a, b) => {
+            return this.getDegree(b) - this.getDegree(a);
+        });
+
+        for (const nodeId of nodesByDegree) {
+            const neighbors = this.getNeighbors(nodeId);
+            const usedColors = new Set();
+
+            for (const neighbor of neighbors) {
+                if (coloring.has(neighbor)) {
+                    usedColors.add(coloring.get(neighbor));
+                }
+            }
+
+            let color = 0;
+            while (usedColors.has(color)) {
+                color++;
+            }
+
+            coloring.set(nodeId, color);
+        }
+
+        return coloring;
+    }
+
+    getChromaticNumber() {
+        const coloring = this.colorGraph();
+        if (coloring.size === 0) return 0;
+        
+        let maxColor = -1;
+        for (const color of coloring.values()) {
+            if (color > maxColor) {
+                maxColor = color;
+            }
+        }
+        return maxColor + 1; 
     }
 }
